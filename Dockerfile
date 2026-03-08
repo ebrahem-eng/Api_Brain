@@ -5,18 +5,21 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir --upgrade pip
 
+# Install numpy first
+RUN pip install --no-cache-dir numpy==1.23.5
+
+# Install torch CPU build
 RUN pip install --no-cache-dir \
     torch==2.0.1+cpu \
     torchvision==0.15.2+cpu \
     --extra-index-url https://download.pytorch.org/whl/cpu
 
-RUN pip install --no-cache-dir \
-    numpy==1.24.3
-
+# Install the rest
 RUN pip install --no-cache-dir \
     fastapi==0.109.0 \
     uvicorn==0.27.0 \
