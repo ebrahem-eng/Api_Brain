@@ -1,25 +1,21 @@
-# Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
-# Set the working directory
 WORKDIR /app
 
-# Install system dependencies
-# We use libgl1 and libglib2.0-0 which are the modern equivalents
+# Install modern system dependencies for OpenCV/YOLO
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
 COPY . .
 
-# Expose the port
+# Ensure the static directory exists
+RUN mkdir -p static
+
 EXPOSE 10000
 
-# Run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
